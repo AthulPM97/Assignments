@@ -5,4 +5,3 @@ var addTothis = function(a,b,c) {
 };
 
 console.log(addTothis.call(obj, 3));
-
