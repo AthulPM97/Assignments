@@ -1,6 +1,8 @@
 const posts = [{title: "post 1", body: "This is post 1", createdAt: new Date().getTime()},
 {title: "post 2", body: "This is post 2", createdAt: new Date().getTime()}];
 
+const user = {};
+
 let interval_id = 0;
 
 function getPosts() {
@@ -34,7 +36,10 @@ function createPost (post) {
     });
 }
 //create post 3 and set resolve and reject outcomes
-createPost({title: "post 3", body: "This is post 3"}).then(getPosts)
+createPost({title: "post 3", body: "This is post 3"}).then(() => {
+    getPosts();
+    updateLastUserActivityTime();
+})
 .catch((err) => console.log(err));
 
 function deletePost() {
@@ -51,19 +56,31 @@ function deletePost() {
     });
 }
 
-deletePost().then(() => {
-    deletePost().then(() => {
-        deletePost().catch((err) => console.log(err));
-    })
-});
+// deletePost().then(() => {
+//     deletePost().then(() => {
+//         deletePost().catch((err) => console.log(err));
+//     })
+// });
 
 //create post 4 and call delete after 1 second
 createPost({title: "post 4", body: "This is post 4"}).then(() => {
     setTimeout(() => {
-        deletePost()
+        //deletePost()
     }, 1000);
 })
 
+function updateLastUserActivityTime() {
+    return new Promise((resolve) => {
+        user.lastActivity = new Date().getTime();
+        console.log(`Last activity done at: ${user.lastActivity}`);
+        resolve();
+    });
+} 
 
+Promise.all([createPost(), updateLastUserActivityTime()]).then(() => {
+    console.log(posts);
+    console.log(user.lastActivity)
+})
 
+deletePost().then(() => console.log(posts));
 
